@@ -3,7 +3,7 @@ package backend.controller;
 import backend.model.JournalEntry;
 import backend.repository.JournalRepository;
 import org.springframework.web.bind.annotation.*;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -35,5 +35,28 @@ public class JournalController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         repository.deleteById(id);
+    }
+
+    @GetMapping("/search")
+    public List<JournalEntry> searchEntries(
+            @RequestParam(required = false) String mood,
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false) LocalDateTime startDate,
+            @RequestParam(required = false) LocalDateTime endDate
+    ) {
+
+        if (mood != null) {
+            return repository.findByMood(mood);
+        }
+
+        if (tag != null) {
+            return repository.findByTagsContaining(tag);
+        }
+
+        if (startDate != null && endDate != null) {
+            return repository.findByDateBetween(startDate, endDate);
+        }
+
+        return repository.findAll();
     }
 }
