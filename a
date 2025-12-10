@@ -1,0 +1,29 @@
+[33mcommit c8b08af56a0c44ca9e301901a41572850df7cd7f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Andrei Daj <dajandrei5@gmail.com>
+Date:   Wed Dec 10 13:11:51 2025 +0200
+
+    Am terminat toata partea de backend(✔ Add Journal Entry)
+
+[33mcommit 1a34cef9d82eb144548ba3ddbccdc6e22584a9fc[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Andrei Daj <dajandrei5@gmail.com>
+Date:   Wed Nov 19 12:52:44 2025 +0200
+
+    Era nevoie si de asta
+
+[33mcommit fe128008ed7ed86090877f101f7243319ce4b2c3[m
+Author: Andrei Daj <dajandrei5@gmail.com>
+Date:   Wed Nov 19 12:50:55 2025 +0200
+
+    Am adougat in backendd controller, model si repository
+
+[33mcommit 0d42aa1f1e25724bf51ca82487db184573f20ee8[m
+Author: Andrei Daj <dajandrei5@gmail.com>
+Date:   Wed Nov 12 17:03:58 2025 +0200
+
+    second commit
+
+[33mcommit 45065c73f900d356efc502b8b5e90a4644b9b1b1[m
+Author: Andrei Daj <dajandrei5@gmail.com>
+Date:   Wed Nov 12 17:03:12 2025 +0200
+
+    first commit
