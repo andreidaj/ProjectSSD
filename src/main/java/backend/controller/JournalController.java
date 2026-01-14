@@ -1,9 +1,8 @@
 package backend.controller;
 
 import backend.model.JournalEntry;
-import backend.repository.JournalRepository;
+import backend.service.FirebaseJournalService;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -11,52 +10,37 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class JournalController {
 
-    private final JournalRepository repository;
+    private final FirebaseJournalService service;
 
-    public JournalController(JournalRepository repository) {
-        this.repository = repository;
+    public JournalController(FirebaseJournalService service) {
+        this.service = service;
     }
 
     @GetMapping
-    public List<JournalEntry> getAll() {
-        return repository.findAll();
+    public List<JournalEntry> getAll() throws Exception {
+        return service.findAll();
     }
 
     @PostMapping
-    public JournalEntry addEntry(@RequestBody JournalEntry entry) {
-        return repository.save(entry);
+    public String addEntry(@RequestBody JournalEntry entry) throws Exception {
+        return service.saveEntry(entry);
     }
 
     @GetMapping("/{id}")
-    public JournalEntry getById(@PathVariable Long id) {
-        return repository.findById(id).orElse(null);
+    public JournalEntry getById(@PathVariable String id) throws Exception {
+        return service.findById(id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
-        repository.deleteById(id);
+    public void deleteById(@PathVariable String id) {
+        service.deleteEntry(id);
     }
 
     @GetMapping("/search")
-    public List<JournalEntry> searchEntries(
-            @RequestParam(required = false) String mood,
-            @RequestParam(required = false) String tag,
-            @RequestParam(required = false) LocalDateTime startDate,
-            @RequestParam(required = false) LocalDateTime endDate
-    ) {
-
+    public List<JournalEntry> searchEntries(@RequestParam(required = false) String mood) throws Exception {
         if (mood != null) {
-            return repository.findByMood(mood);
+            return service.findByMood(mood);
         }
-
-        if (tag != null) {
-            return repository.findByTagsContaining(tag);
-        }
-
-        if (startDate != null && endDate != null) {
-            return repository.findByDateBetween(startDate, endDate);
-        }
-
-        return repository.findAll();
+        return service.findAll();
     }
 }

@@ -16,8 +16,8 @@ const AuthForm = ({ onLogin }) => {
 
             // We use fetch directly here or import JournalService if you prefer
             const url = isLogin
-                ? 'http://localhost:8080/api/auth/login'
-                : 'http://localhost:8080/api/auth/register';
+                ? 'http://localhost:8081/api/auth/login'
+                : 'http://localhost:8081/api/auth/register';
 
             const res = await fetch(url, {
                 method: 'POST',

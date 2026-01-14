@@ -1,24 +1,22 @@
 package backend.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
 public class JournalEntry {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private String id; // Firestore IDs are Alphanumeric Strings
     private String title;
     private String content;
-    private LocalDateTime date = LocalDateTime.now();
+    private String date = LocalDateTime.now().toString();
     private String mood;
     private String tags;
     private String mediaUrl;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Required empty constructor for Firebase
+    public JournalEntry() {}
+
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -26,8 +24,8 @@ public class JournalEntry {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
 
-    public LocalDateTime getDate() { return date; }
-    public void setDate(LocalDateTime date) { this.date = date; }
+    public String getDate() { return date; }
+    public void setDate(String date) { this.date = date; }
 
     public String getMood() { return mood; }
     public void setMood(String mood) { this.mood = mood; }

@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // This URL must match your Spring Boot Controller
-const API_URL = 'http://localhost:8080/api/journal';
+const API_URL = 'http://localhost:8081/api/journal';
 
 class JournalService {
 
@@ -27,11 +27,11 @@ class JournalService {
     }
 
     register(user) {
-        return axios.post('http://localhost:8080/api/auth/register', user);
+        return axios.post('http://localhost:8081/api/auth/register', user);
     }
 
     login(user) {
-        return axios.post('http://localhost:8080/api/auth/login', user);
+        return axios.post('http://localhost:8081/api/auth/login', user);
     }
 }
     
