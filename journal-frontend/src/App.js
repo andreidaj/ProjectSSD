@@ -6,7 +6,7 @@ import JournalList from './components/JournalList';
 import AuthForm from './components/AuthForm';
 import Sidebar from './components/Sidebar';
 import JournalTypesGrid from './components/JournalTypesGrid';
-import ProfileView from './components/ProfileView';// Componenta noua creata mai sus
+import ProfileView from './components/ProfileView';
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -14,49 +14,78 @@ function App() {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const [activeTab, setActiveTab] = useState('types'); // 'home', 'types', 'profile', 'write'
+  const [activeTab, setActiveTab] = useState('types');
   const [entries, setEntries] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
-    if (user) loadEntries();
-  }, [user]);
+    if (user && (user.uid || user.id)) {
+        loadEntries();
+    }
+  }, [user?.uid, user?.id, activeTab]); // Sincronizare mai precisă
 
   const loadEntries = () => {
-    JournalService.getAllEntries()
-        .then(res => setEntries(res.data))
-        .catch(err => console.error("Error connecting to backend:", err));
+    const userId = user?.uid || user?.id;
+    if (userId) {
+        JournalService.getAllEntries(userId)
+            .then(res => {
+                setEntries(res.data);
+            })
+            .catch(err => console.error("Error connecting to backend:", err));
+    }
   };
 
+  // Funcția principală de Login
   const handleLogin = (userData) => {
     setUser(userData);
     localStorage.setItem("journalUser", JSON.stringify(userData));
   };
-  const handleUpdateUser = (u) => {
-    setUser(u);
-    localStorage.setItem("journalUser", JSON.stringify(u));
+
+  // FUNCȚIE NOUĂ: Specială pentru actualizarea profilului fără a reîncărca tot
+  const handleUpdateUser = (updatedData) => {
+    // Combinăm datele vechi cu cele noi pentru a nu pierde ID-ul sau parola
+    const finalUser = { ...user, ...updatedData };
+    setUser(finalUser);
+    localStorage.setItem("journalUser", JSON.stringify(finalUser));
+    console.log("Profile updated in App state:", finalUser);
   };
 
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("journalUser");
     setEntries([]);
+    setActiveTab('types');
   };
 
-  // Când dai click pe un card (ex: Travel Journal)
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-    setActiveTab('write'); // Te duce la pagina de scris
+    setActiveTab('write');
   };
 
   const handleAddEntry = (entry) => {
-    JournalService.createEntry(entry).then(() => {
-      loadEntries();
-      setActiveTab('home'); // Dupa salvare, mergi la lista
-    });
-  };
+    const userId = user?.uid || user?.id;
 
-  // --- RENDERING ---
+    if (!userId) {
+        alert("Error: No User ID found. Please re-login.");
+        return;
+    }
+
+    const entryWithUser = {
+        ...entry,
+        userId: userId
+    };
+
+    JournalService.createEntry(entryWithUser)
+        .then(() => {
+            setTimeout(() => {
+                loadEntries();
+                setActiveTab('home');
+            }, 700);
+        })
+        .catch(err => {
+            console.error("Save error:", err);
+        });
+  };
 
   if (!user) {
     return <AuthForm onLogin={handleLogin} />;
@@ -64,23 +93,18 @@ function App() {
 
   return (
       <div className="dashboard-container">
-        {/* 1. Sidebar Fix Stanga */}
         <Sidebar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             onLogout={handleLogout}
-            userEmail={user.email}
+            user={user} // Sidebar va primi noul 'user' cu displayName actualizat
         />
 
-        {/* 2. Zona Principala Dreapta */}
         <div className="main-content">
-
-          {/* VEDERE: JOURNAL TYPES (Gridul din poza) */}
           {activeTab === 'types' && (
               <JournalTypesGrid onSelectCategory={handleCategorySelect} />
           )}
 
-          {/* VEDERE: WRITE NEW ENTRY */}
           {activeTab === 'write' && (
               <div className="container" style={{maxWidth: '800px'}}>
                 <JournalForm
@@ -91,24 +115,24 @@ function App() {
               </div>
           )}
 
-          {/* VEDERE: HOME (Lista intrarilor recente) */}
           {activeTab === 'home' && (
-              <div>
+              <div className="container">
                 <h2 className="mb-4" style={{color: 'white', fontWeight: 'bold'}}>Recent Memories</h2>
-                {/* Aici poți pune SearchBar-ul dacă vrei */}
-                <JournalList entries={entries} onDelete={(id) => {
-                  JournalService.deleteEntry(id).then(loadEntries);
-                }} />
+                {entries.length === 0 ? (
+                    <p style={{color: 'gray'}}>No memories found yet. Start writing!</p>
+                ) : (
+                    <JournalList entries={entries} onDelete={(id) => {
+                      JournalService.deleteEntry(id).then(loadEntries);
+                    }} />
+                )}
               </div>
           )}
 
-          {/* VEDERE: PROFILE (Simplu) */}
           {activeTab === 'profile' && (
-              <div className="card p-5" style={{backgroundColor: '#1e293b', color: 'white', maxWidth:'600px'}}>
-                <h3>My Profile</h3>
-                <p>Email: {user.email}</p>
-                <button className="btn btn-primary">Change Password</button>
-              </div>
+              <ProfileView
+                user={user}
+                onUpdateUser={handleUpdateUser} // Folosim funcția nouă de update
+              />
           )}
         </div>
       </div>

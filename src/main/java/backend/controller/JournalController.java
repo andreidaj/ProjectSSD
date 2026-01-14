@@ -7,7 +7,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/journal")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") // Permite comunicarea cu React
 public class JournalController {
 
     private final FirebaseJournalService service;
@@ -16,11 +16,13 @@ public class JournalController {
         this.service = service;
     }
 
-    @GetMapping
-    public List<JournalEntry> getAll() throws Exception {
-        return service.findAll();
+    // 1. Obținem toate jurnalele DOAR pentru un anumit utilizator
+    @GetMapping("/user/{userId}")
+    public List<JournalEntry> getAllByUser(@PathVariable String userId) throws Exception {
+        return service.findAllByUserId(userId);
     }
 
+    // 2. Salvarea - primim obiectul cu userId deja setat din React
     @PostMapping
     public String addEntry(@RequestBody JournalEntry entry) throws Exception {
         return service.saveEntry(entry);
@@ -36,11 +38,14 @@ public class JournalController {
         service.deleteEntry(id);
     }
 
+    // 3. Căutare după mood, dar filtrată și după utilizator
     @GetMapping("/search")
-    public List<JournalEntry> searchEntries(@RequestParam(required = false) String mood) throws Exception {
+    public List<JournalEntry> searchEntries(
+            @RequestParam String userId,
+            @RequestParam(required = false) String mood) throws Exception {
         if (mood != null) {
-            return service.findByMood(mood);
+            return service.findByMoodAndUser(userId, mood);
         }
-        return service.findAll();
+        return service.findAllByUserId(userId);
     }
 }

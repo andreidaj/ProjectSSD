@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 
 public class JournalEntry {
 
-    private String id; // Firestore IDs are Alphanumeric Strings
+    private String id;
+    private String userId;
     private String title;
     private String content;
     private String date = LocalDateTime.now().toString();
@@ -12,8 +13,11 @@ public class JournalEntry {
     private String tags;
     private String mediaUrl;
 
-    // Required empty constructor for Firebase
+
     public JournalEntry() {}
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

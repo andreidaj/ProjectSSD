@@ -6,7 +6,6 @@ import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -16,6 +15,10 @@ public class FirebaseJournalService {
 
     private static final String COL_NAME = "journal_entries";
 
+    /**
+     * Salvează sau actualizează o intrare.
+     * IMPORTANT: Asigură-te că obiectul entry are userId setat din Frontend!
+     */
     public String saveEntry(JournalEntry entry) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         DocumentReference docRef;
@@ -31,14 +34,24 @@ public class FirebaseJournalService {
         return result.get().getUpdateTime().toString();
     }
 
-    public List<JournalEntry> findAll() throws Exception {
+    /**
+     * Returnează DOAR intrările care aparțin utilizatorului logat.
+     */
+    public List<JournalEntry> findAllByUserId(String userId) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
-        ApiFuture<QuerySnapshot> query = db.collection(COL_NAME).get();
+        // Filtrare critică după userId
+        ApiFuture<QuerySnapshot> query = db.collection(COL_NAME)
+                .whereEqualTo("userId", userId)
+                .get();
+
         return query.get().getDocuments().stream()
                 .map(doc -> doc.toObject(JournalEntry.class))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Caută o intrare specifică după ID.
+     */
     public JournalEntry findById(String id) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         DocumentReference docRef = db.collection(COL_NAME).document(id);
@@ -46,14 +59,23 @@ public class FirebaseJournalService {
         return document.exists() ? document.toObject(JournalEntry.class) : null;
     }
 
+    /**
+     * Șterge o intrare.
+     */
     public void deleteEntry(String id) {
         Firestore db = FirestoreClient.getFirestore();
         db.collection(COL_NAME).document(id).delete();
     }
 
-    public List<JournalEntry> findByMood(String mood) throws Exception {
+    /**
+     * Filtrează după stare de spirit, dar DOAR în cadrul postărilor utilizatorului respectiv.
+     */
+    public List<JournalEntry> findByMoodAndUser(String userId, String mood) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
-        Query query = db.collection(COL_NAME).whereEqualTo("mood", mood);
+        Query query = db.collection(COL_NAME)
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("mood", mood);
+
         return query.get().get().getDocuments().stream()
                 .map(doc -> doc.toObject(JournalEntry.class))
                 .collect(Collectors.toList());
