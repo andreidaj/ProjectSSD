@@ -34,4 +34,21 @@ public class FirebaseUserService {
         }
         return null;
     }
+
+    public User updateUserProfile(User user) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
+        User existingUser = findByEmail(user.getEmail());
+
+        if (existingUser != null) {
+            DocumentReference docRef = db.collection(COLLECTION_NAME).document(existingUser.getId());
+            // Facem update doar la ce ne interesează
+            docRef.update("username", user.getUsername(), "profilePicture", user.getProfilePicture());
+
+            // Returnăm obiectul actualizat
+            existingUser.setUsername(user.getUsername());
+            existingUser.setProfilePicture(user.getProfilePicture());
+            return existingUser;
+        }
+        return null;
+    }
 }

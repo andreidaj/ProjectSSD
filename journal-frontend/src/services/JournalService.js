@@ -1,29 +1,30 @@
-// src/services/JournalService.js
 import axios from 'axios';
 
-// This URL must match your Spring Boot Controller
 const API_URL = 'http://localhost:8081/api/journal';
+const AI_URL = 'http://localhost:8081/api/ai'; // URL-ul pentru controller-ul AI
 
 class JournalService {
 
-    // Get all entries
     getAllEntries() {
         return axios.get(API_URL);
     }
 
-    // Save a new entry
     createEntry(entry) {
         return axios.post(API_URL, entry);
     }
 
-    // Delete an entry
     deleteEntry(id) {
         return axios.delete(API_URL + '/' + id);
     }
 
-    // Search entries
     searchEntries(params) {
         return axios.get(API_URL + '/search', { params });
+    }
+
+    // --- METODA NOUĂ PENTRU AI ---
+    getAiSuggestion(category) {
+        // Apelăm endpoint-ul din AiController.java
+        return axios.get(`${AI_URL}/suggest?category=${category}`);
     }
 
     register(user) {
@@ -33,6 +34,16 @@ class JournalService {
     login(user) {
         return axios.post('http://localhost:8081/api/auth/login', user);
     }
+
+    // Pentru AI
+    getAiSuggestion(category) {
+        return axios.get(`${AI_URL}/suggest?category=${category}`);
+    }
+
+    // Pentru Profil
+    updateProfile(user) {
+        return axios.post('http://localhost:8081/api/auth/update', user);
+    }
 }
-    
+
 export default new JournalService();

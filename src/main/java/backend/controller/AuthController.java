@@ -38,4 +38,8 @@ public class AuthController {
         }
         return null;
     }
+    @PostMapping("/update")
+    public User updateProfile(@RequestBody User user) throws Exception {
+        return service.updateUserProfile(user);
+    }
 }

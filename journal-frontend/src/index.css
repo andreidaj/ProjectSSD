@@ -1,13 +1,173 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+:root {
+  /* Paleta de culori bazată pe imaginile tale */
+  --bg-dark: #1b263b;       /* Fundalul principal */
+  --bg-sidebar: #0d1b2a;    /* Sidebar-ul (puțin mai închis pentru adâncime, dar fluid) */
+  --card-bg: #1e40af;       /* Albastrul vibrant al cardurilor */
+  --text-white: #ffffff;    /* Text alb pur */
+  --text-muted: #e0e1dd;    /* Text ușor gri pentru elemente secundare */
+  --accent-color: #415a77;  /* Hover color */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-white);
+  overflow-x: hidden;
+}
+
+/* --- AUTH PAGE STYLES (CENTERED) --- */
+
+.auth-container {
+  display: flex;
+  justify-content: center; /* Centrează orizontal */
+  align-items: center;     /* Centrează vertical */
+  height: 100vh;
+  width: 100vw;
+  /* Un gradient subtil de fundal pentru a nu fi plictisitor */
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+}
+
+.auth-form-wrapper {
+  width: 100%;
+  max-width: 420px; /* Lățimea maximă a cardului */
+  padding: 3rem;
+  background-color: rgba(30, 41, 59, 0.7); /* Fundal semi-transparent */
+  backdrop-filter: blur(10px); /* Efect de sticlă */
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5); /* Umbră puternică pentru profunzime */
+
+  /* Animație de intrare */
+  animation: zoomIn 0.5s ease-out;
+}
+
+/* Stiluri input rămân la fel */
+/* ... restul codului CSS ... */
+
+.dark-auth-input {
+  background-color: rgba(0,0,0,0.3) !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  color: white !important; /* Textul scris de tine e alb */
+  padding: 12px 15px;
+  border-radius: 8px;
+}
+
+/* ASTA FACE PLACEHOLDER-UL ALB (Password, Email...) */
+.dark-auth-input::placeholder {
+  color: rgba(255, 255, 255, 0.8) !important; /* Alb cu 80% opacitate */
+}
+
+.dark-auth-input:focus {
+  border-color: var(--primary-blue) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
+}
+.dark-auth-input:focus {
+  border-color: var(--primary-blue) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Animație */
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(90deg, var(--bg-sidebar) 250px, var(--bg-dark) 250px); /* Truc vizual pentru blending */
+}
+
+/* Sidebar Styling - Acum cu Text Alb */
+.sidebar {
+  width: 250px;
+  background-color: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  /* Eliminăm umbra stridentă pentru a se îmbina mai bine */
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin-top: 3rem;
+}
+
+.sidebar-item {
+  padding: 15px 10px;
+  cursor: pointer;
+  color: var(--text-muted); /* Alb murdar */
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-radius: 8px;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+  color: var(--text-white); /* Alb pur la hover */
+  background-color: rgba(255, 255, 255, 0.1); /* Ușor fundal la hover */
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  padding: 3rem;
+  overflow-y: auto;
+  background-color: var(--bg-dark);
+}
+
+/* Cards Grid (Journal Types) */
+.journal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.journal-card {
+  background-color: var(--card-bg); /* Albastru regal din poză */
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  color: white; /* Asigură că textul din card e alb */
+}
+
+.journal-card:hover {
+  transform: translateY(-5px);
+  background-color: #2563eb; /* Un albastru puțin mai deschis la hover */
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
+}
+
+.journal-card h3 {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.icon-wrapper {
+  font-size: 3.5rem;
+  color: white;
+  margin-bottom: 5px;
 }

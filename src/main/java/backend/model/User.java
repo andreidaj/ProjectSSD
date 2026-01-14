@@ -8,6 +8,8 @@ public class User {
     private String id; // Changed from Long to String for Firebase compatibility
     private String email;
     private String password;
+    private String username;
+    private String profilePicture;
 
     // Required empty constructor for Firebase serialization
     public User() {}
@@ -20,4 +22,10 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getProfilePicture() { return profilePicture; }
+    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
 }
